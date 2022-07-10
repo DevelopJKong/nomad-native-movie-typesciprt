@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "noovies",
+    "slug": "noovies",
+    "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"],
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "userInterfaceStyle": "automatic"
+    },
+    "android": {
+      "userInterfaceStyle": "automatic"
+    }
+  },
+  "name": "noovies"
+}
