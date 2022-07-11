@@ -3,18 +3,18 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Text, View, TouchableOpacity } from "react-native";
 import { YELLOW_COLOR } from "../colors";
 
-const ScreenOne = ({ navigation: { navigate } }:any) => (
+const ScreenOne = ({ navigation: { navigate } }: any) => (
   <TouchableOpacity onPress={() => navigate("Stack", { screen: "Two" })}>
     <Text>go to two</Text>
   </TouchableOpacity>
 );
-const ScreenTwo = ({ navigation: { navigate } }:any) => (
+const ScreenTwo = ({ navigation: { navigate } }: any) => (
   <TouchableOpacity onPress={() => navigate("Stack", { screen: "Three" })}>
     <Text>go to three</Text>
   </TouchableOpacity>
 );
-const ScreenThree = ({ navigation: { navigate } }:any) => (
-  <TouchableOpacity onPress={(() => navigate("Tabs", { screen: "Search" }))}>
+const ScreenThree = ({ navigation: { navigate } }: any) => (
+  <TouchableOpacity onPress={() => navigate("Tabs", { screen: "Search" })}>
     <Text>go to one</Text>
   </TouchableOpacity>
 );
