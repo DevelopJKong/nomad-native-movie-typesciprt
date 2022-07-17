@@ -1,17 +1,14 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import Swiper from "react-native-web-swiper";
+import { ActivityIndicator, Dimensions } from "react-native";
+import Swiper from "react-native-swiper";
 import styled from "styled-components/native";
-import { ActivityIndicator, Dimensions, StyleSheet } from "react-native";
-import { makeImgPath } from "../utils";
-import { BlurView } from "expo-blur";
+import Poster from "../components/Poster";
+import Slide from "../components/Slide";
+
+const API_KEY = "10923b261ba94d897ac6b81148314a3f";
+
 const Container = styled.ScrollView``;
-
-const SwiperBox = styled(Swiper)<any>``;
-
-const View = styled.View`
-  flex: 1;
-`;
 
 const Loader = styled.View`
   flex: 1;
@@ -19,56 +16,119 @@ const Loader = styled.View`
   align-items: center;
 `;
 
-const BgImg = styled.Image``;
-
-const Title = styled.Text``;
-
-const API_KEY = "0b43a39425ff0b25379f3bb373295b11";
-const BASE_PATH = "https://api.themoviedb.org/3";
-
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+// light 모드일때는 수정해야할듯
+const ListTitle = styled.Text`
+  color: white;
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 20px;
+`;
+
+const TrendingScroll = styled.ScrollView`
+  margin-top: 20px;
+`;
+
+const Title = styled.Text`
+  color: white;
+  font-weight: 600;
+  margin-top: 7px;
+  margin-bottom: 5px;
+`;
+
+const Votes = styled.Text`
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+`;
+
+const Movie = styled.View`
+  margin-right: 20px;
+  align-items: center;
+`;
 
 const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
   const [loading, setLoading] = useState(true);
   const [nowPlaying, setNowPlaying] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [trending, setTrending] = useState([]);
+  const getTrending = async () => {
+    const { results } = await (
+      await fetch(
+        `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`
+      )
+    ).json();
+    setTrending(results);
+  };
+  const getUpcoming = async () => {
+    const { results } = await (
+      await fetch(
+        `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
+      )
+    ).json();
+    setUpcoming(results);
+  };
   const getNowPlaying = async () => {
     const { results } = await (
       await fetch(
-        `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1&region=KR`
+        `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=en-US&page=1`
       )
     ).json();
     setNowPlaying(results);
+  };
+  const getData = async () => {
+    await Promise.all([getTrending(), getUpcoming(), getNowPlaying()]);
     setLoading(false);
   };
-
   useEffect(() => {
-    getNowPlaying();
+    getData();
   }, []);
-
   return loading ? (
     <Loader>
-      <ActivityIndicator size="large" />
+      <ActivityIndicator />
     </Loader>
   ) : (
     <Container>
-      <SwiperBox
+      <Swiper
+        horizontal
         loop
-        timeout={3.5}
-        controlsEnabled={false}
-        containerStyle={{ width: "100%", height: SCREEN_HEIGHT / 4 }}
+        autoplay
+        autoplayTimeout={3.5}
+        showsButtons={false}
+        showsPagination={false}
+        containerStyle={{
+          marginBottom: 30,
+          width: "100%",
+          height: SCREEN_HEIGHT / 4,
+        }}
       >
-        {nowPlaying.map((movie:any) => (
-          <View key={movie.id}>
-            <BgImg
-              style={StyleSheet.absoluteFill}
-              source={{ uri: makeImgPath(movie.backdrop_path) }}
-            />
-            <BlurView intensity={80} style={StyleSheet.absoluteFill}>
-              <Title>{movie.original_title}</Title>
-            </BlurView>
-          </View>
+        {nowPlaying.map((movie: any) => (
+          <Slide
+            key={movie.id}
+            backdropPath={movie.backdrop_path}
+            posterPath={movie.poster_path}
+            originalTitle={movie.original_title}
+            voteAverage={movie.vote_average}
+            overview={movie.overview}
+          />
         ))}
-      </SwiperBox>
+      </Swiper>
+      <ListTitle>Trending Movies</ListTitle>
+      <TrendingScroll
+        contentContainerStyle={{ paddingHorizontal: 30 }}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      >
+        {trending.map((movie: any) => (
+          <Movie key={movie.id}>
+            <Poster path={movie.poster_path} />
+            <Title>
+              {movie.original_title.slice(0, 15)}
+              {movie.original_title.length > 13 ? "..." : null}
+            </Title>
+            <Votes>{movie.vote_average}</Votes>
+          </Movie>
+        ))}
+      </TrendingScroll>
     </Container>
   );
 };
