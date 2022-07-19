@@ -1,20 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
+import { useQuery } from "react-query";
 import styled from "styled-components/native";
+import { moviesApi, tvApi } from "../api";
+import HList from "../components/HList";
+import Loader from "../components/Loader";
 
-const Btn = styled.TouchableOpacity`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: ${(props) => props.theme.mainBgColor};
+const Container = styled.ScrollView``;
+
+const SearchBar = styled.TextInput`
+  background-color: white;
+  padding: 10px 15px;
+  border-radius: 9999px;
+  width: 90%;
+  margin: 10px auto;
 `;
 
-const Title = styled.Text`
-  color: ${(props) => props.theme.textColor};
-`;
+const Search = () => {
+  const [query, setQuery] = useState("");
+  const onChangeText = (text: string) => setQuery(text);
+  const {
+    isLoading: moviesLoading,
+    data: moviesData,
+    refetch: searchMovies,
+  } = useQuery(["searchMovies", query], moviesApi.search, {
+    enabled: false,
+  });
+  const {
+    isLoading: tvLoading,
+    data: tvData,
+    refetch: searchTv,
+  } = useQuery(["searchTv", query], tvApi.search, {
+    enabled: false,
+  });
+  const onSubmit = () => {
+    if (query === "") {
+      return;
+    }
+    searchMovies();
+    searchTv();
+  };
 
-const Search = ({ navigation: { navigate } }: any) => (
-  <Btn onPress={() => navigate("Stack", { screen: "Two" })}>
-    <Title>Search</Title>
-  </Btn>
-);
+  return (
+    <Container>
+      <SearchBar
+        placeholder="Search for Movie or TV Show"
+        placeholderTextColor="grey"
+        returnKeyType="search"
+        onChangeText={onChangeText}
+        onSubmitEditing={onSubmit}
+      />
+      {moviesLoading || tvLoading ? <Loader /> : null}
+      {moviesData ? <HList title="Movie Results" data={moviesData.results}/> : null}
+      {tvData ? <HList title="Tv Results" data={tvData.results}/> : null}
+
+    </Container>
+  );
+};
+
 export default Search;
