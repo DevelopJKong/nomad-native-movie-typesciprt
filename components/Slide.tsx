@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
 import React from "react";
 import {
@@ -8,11 +8,11 @@ import {
   View,
 } from "react-native";
 import styled from "styled-components/native";
+import { Movie } from "../api";
 import { makeImgPath } from "../utils";
 import Poster from "./Poster";
 
 const BgImg = styled.Image``;
-
 const Title = styled.Text<{ isDark: boolean }>`
   font-size: 16px;
   font-weight: 600;
@@ -37,13 +37,13 @@ const Overview = styled.Text<{ isDark: boolean }>`
 const Votes = styled(Overview)`
   font-size: 12px;
 `;
-
 interface SlideProps {
   backdropPath: string;
   posterPath: string;
   originalTitle: string;
   voteAverage: number;
   overview: string;
+  fullData: Movie;
 }
 
 const Slide: React.FC<SlideProps> = ({
@@ -52,6 +52,7 @@ const Slide: React.FC<SlideProps> = ({
   originalTitle,
   voteAverage,
   overview,
+  fullData,
 }) => {
   const isDark = useColorScheme() === "dark";
   const navigation = useNavigation();
@@ -60,7 +61,7 @@ const Slide: React.FC<SlideProps> = ({
     navigation.navigate("Stack", {
       screen: "Detail",
       params: {
-        originalTitle,
+        ...fullData,
       },
     });
   };
@@ -91,5 +92,4 @@ const Slide: React.FC<SlideProps> = ({
     </TouchableWithoutFeedback>
   );
 };
-
 export default Slide;

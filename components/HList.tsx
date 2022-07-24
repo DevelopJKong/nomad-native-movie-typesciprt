@@ -16,10 +16,8 @@ const ListTitle = styled.Text`
 `;
 
 export const HListSeparator = styled.View`
-    width:20px;
-`
-
-
+  width: 20px;
+`;
 
 interface HListProps {
   title: string;
@@ -27,23 +25,24 @@ interface HListProps {
 }
 
 const HList: React.FC<HListProps> = ({ title, data }) => (
-    <ListContainer>
-      <ListTitle>{title}</ListTitle>
-      <FlatList
-        data={data}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        ItemSeparatorComponent={HListSeparator}
-        contentContainerStyle={{ paddingHorizontal: 30 }}
-        keyExtractor={(item) => item.id + ""}
-        renderItem={({ item }) => (
-          <VMedia
-            posterPath={item.poster_path}
-            originalTitle={item.original_title ?? item.original_name}
-            voteAverage={item.vote_average}
-          />
-        )}
-      />
-    </ListContainer>
-  );
+  <ListContainer>
+    <ListTitle>{title}</ListTitle>
+    <FlatList
+      data={data}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      ItemSeparatorComponent={HListSeparator}
+      contentContainerStyle={{ paddingHorizontal: 30 }}
+      keyExtractor={(item) => item.id + ""}
+      renderItem={({ item }) => (
+        <VMedia
+          posterPath={item.poster_path}
+          originalTitle={item.original_title ?? item.original_name}
+          voteAverage={item.vote_average}
+          fullData={item}
+        />
+      )}
+    />
+  </ListContainer>
+);
 export default HList;
