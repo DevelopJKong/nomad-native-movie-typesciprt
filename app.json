@@ -9,7 +9,7 @@
       "userInterfaceStyle": "automatic"
     },
     "android": {
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "dark"
     }
   },
   "name": "noovies"
