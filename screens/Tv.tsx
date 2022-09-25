@@ -9,18 +9,9 @@ import Loader from "../components/Loader";
 const Tv = () => {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
-  const { isLoading: todayLoading, data: todayData } = useQuery(
-    ["tv", "today"],
-    tvApi.airingToday
-  );
-  const { isLoading: topRatedLoading, data: topRatedData } = useQuery(
-    ["tv", "topRated"],
-    tvApi.topRated
-  );
-  const { isLoading: trendingLoading, data: trendingData } = useQuery(
-    ["tv", "trending"],
-    tvApi.trending
-  );
+  const { isLoading: todayLoading, data: todayData } = useQuery(["tv", "today"], tvApi.airingToday);
+  const { isLoading: topRatedLoading, data: topRatedData } = useQuery(["tv", "topRated"], tvApi.topRated);
+  const { isLoading: trendingLoading, data: trendingData } = useQuery(["tv", "trending"], tvApi.trending);
   const onRefresh = async () => {
     setRefreshing(true);
     queryClient.refetchQueries(["tv"]);
@@ -33,14 +24,12 @@ const Tv = () => {
   }
   return (
     <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
+      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       contentContainerStyle={{ paddingVertical: 30 }}
     >
-      <HList title="Trending TV" data={trendingData.results} />
-      <HList title="Airing Today" data={todayData.results} />
-      <HList title="Top Rated TV" data={topRatedData.results} />
+      {trendingData ? <HList title="Trending TV" data={trendingData.results} /> : null}
+      {todayData ? <HList title="Airing Today" data={todayData.results} /> : null}
+      {topRatedData ? <HList title="Top Rated TV" data={topRatedData.results} /> : null}
     </ScrollView>
   );
 };

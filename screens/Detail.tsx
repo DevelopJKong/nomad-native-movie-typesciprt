@@ -21,7 +21,7 @@ import Loader from "../components/Loader";
 import { Ionicons } from "@expo/vector-icons";
 import * as WebBrowser from "expo-web-browser";
 import { WebView } from "react-native-webview";
-import WebViewInfo from "./WebViewInfo";
+//import WebViewInfo from "./WebViewInfo";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
